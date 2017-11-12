@@ -1,0 +1,10 @@
+body,
+button,
+select,
+input,
+textarea {
+  @include font-smoothing(on);
+  text-rendering: optimizeLegibility;
+  // font-family: ;
+  // line-height: ;
+}

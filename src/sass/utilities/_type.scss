@@ -1,0 +1,50 @@
+// Enable/disable OSX font-smoothing (support: Webkit, Moz)
+// @param $value Accepted values: [on | off]
+@mixin font-smoothing($value: on) {
+  @if $value == on {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+  } @else {
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+// Font-face declaration utility - taken from Bourbon
+// @param $font-family Name to reference in font-family rules
+// @param $file-path Path to font (including filename without extension)
+// @param $weight Weight to reference in font-weight rules (default: normal)
+// @param $style Style to reference in font-style rules (default: normal)
+// @see https://github.com/thoughtbot/bourbon/blob/3dca2ecccaaa3db9cea8d74c8221fbde7e6284d8/app/assets/stylesheets/css3/_font-face.scss
+//
+// Example:
+//   @include font-face('My Webfont', '/media/fonts/myfont');
+//   Then use: `font-family: 'My Webfont', {fallbacks...};`
+//
+// Example specifying weight, style:
+//   @include font-face('My Webfont', '/media/fonts/myfont', 700, italic);
+//   Then use: `font-family: 'My Webfont', {fallbacks...};`
+@mixin font-face($font-family, $file-path, $weight: normal, $style: normal) {
+  @font-face {
+    font-family: $font-family;
+    font-weight: $weight;
+    font-style: $style;
+    src: url('#{$file-path}.woff') format('woff'),
+         url('#{$file-path}.ttf') format('truetype'),
+         url('#{$file-path}.svg##{$font-family}') format('svg');
+  }
+}
+
+// @todo Add standard unprefixed version
+// scss-lint:disable VendorPrefix
+@mixin placeholder {
+  &::-webkit-input-placeholder { @content; }
+  &::-moz-placeholder { @content; }
+  &:-ms-input-placeholder { @content; }
+}
+
+// scss-lint:disable VendorPrefix
+@mixin selection {
+  ::-moz-selection { @content; }
+  ::selection { @content; }
+}

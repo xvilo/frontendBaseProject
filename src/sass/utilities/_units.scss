@@ -1,0 +1,26 @@
+// @param $number
+// @see http://stackoverflow.com/a/12335841
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+
+// Convert px value to em equivalent
+// @param $value Input px value
+// @param $px-reference Reference px size (font-size of self/parent)
+@function em($value, $px-reference: 16px) {
+  @return ($value / $px-reference) * 1em;
+}
+
+// Example:
+//   @include rem((margin: 20px));
+//
+// Example with non-pixel values (non-pixel values will not be modified):
+//   @include rem((margin: 20px auto 1em));
+//
+// Example with multiple properties:
+//   @include rem((
+//     margin: 20px,
+//     font-size: 16px
+//   ));
+$guss-rem-baseline: $base-font-size;
+@import 'guss-rem/rem';

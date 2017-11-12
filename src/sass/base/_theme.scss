@@ -1,0 +1,17 @@
+html {
+  // background-color: ;
+  // -webkit-tap-highlight-color: ;
+
+  @include selection {
+    // background-color: ;
+    // color: ;
+  }
+}
+
+body,
+button,
+select,
+input,
+textarea {
+  // color: ;
+}

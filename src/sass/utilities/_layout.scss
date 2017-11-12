@@ -1,0 +1,62 @@
+@mixin clearfix {
+  &:after {
+    display: table;
+    clear: both;
+    content: '';
+  }
+}
+
+@mixin center-justify-parent {
+  text-align: justify;
+  font-size: 1px;
+
+  &:after {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: -1px;
+    content: '';
+  }
+}
+
+@mixin center-justify($restore-font-size: true) {
+  @if $restore-font-size == true {
+    font-size: 1rem;
+  }
+
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@mixin vertical-center-parent {
+  height: 100%;
+  font-size: 0;
+
+  &:before {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    content: '';
+  }
+}
+
+@mixin vertical-center($restore-font-size: true) {
+  @if $restore-font-size == true {
+    font-size: 1rem;
+  }
+
+  display: inline-block;
+  vertical-align: middle;
+}
+
+// Hide element visually but keep available for screen readers
+// @see https://github.com/h5bp/html5-boilerplate/blob/6f50688c1c16871a7055f5da0730bd43f9306b8a/src/css/main.css#L126-L140
+@mixin visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}

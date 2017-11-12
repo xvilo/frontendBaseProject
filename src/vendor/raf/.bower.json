@@ -1,0 +1,15 @@
+{
+  "name": "raf",
+  "homepage": "https://github.com/component/raf",
+  "version": "1.2.0",
+  "_release": "1.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.2.0",
+    "commit": "248c5fbdc10d35caf0775ed8f1c283e7dab363b4"
+  },
+  "_source": "git://github.com/component/raf.git",
+  "_target": "~1.2.0",
+  "_originalSource": "component/raf",
+  "_direct": true
+}

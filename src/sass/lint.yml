@@ -1,0 +1,12 @@
+linters:
+  EmptyRule:
+    enabled: false
+
+  LeadingZero:
+    style: include_zero
+
+  PropertySortOrder:
+    order: recess
+
+  SelectorFormat:
+    convention: hyphenated_BEM
