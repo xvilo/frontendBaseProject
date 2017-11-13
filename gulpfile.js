@@ -12,8 +12,9 @@ var gutil = require('gulp-util');
 var postcss = require('gulp-postcss');
 var mqDedupe = require('postcss-mq-dedupe');
 var webpack = require('webpack-stream');
-var closureCompiler = require('google-closure-compiler').gulp();
+var closureCompiler = require('gulp-closure-compiler');
 var liveReload = require('gulp-livereload');
+var concat = require('gulp-concat');
 
 var slice = [].slice;
 
@@ -27,6 +28,7 @@ paths.vendor = paths.src + "vendor/";
 paths.css = paths.docroot + "media/css/";
 paths.js = paths.docroot + "media/js/";
 paths.dist = paths.docroot + "dist/";
+paths.closure = "node_modules/google-closure-library/closure/goog";
 
 // Sass stuff
 var precision = 10;
@@ -54,16 +56,31 @@ gulp.task('sass', function() {
   }));
 });
 
-var closurePath = './node_modules/google-closure-library/closure/goog/';
-console.log('hi', closurePath + '*.js')
 gulp.task('javascripts', function() {
+  console.log('!' + paths.closure + '/testing/*.js');
   return gulp.src([
-            'node_modules/google-closure-library/closure/goog/*.js',
-            //paths.modules + 'app.js',
-            '!node_modules/google-closure-library/closure/goog/*test.js'], {base: './'})
+            paths.modules + 'app.js',
+            paths.closure + '/**/*.js',
+            '!' + paths.closure + '/**/*_test.js',
+            '!' + paths.closure + '/**/*_perf.js',
+            '!' + paths.closure + '/**/*tester.js',
+            '!' + paths.closure + '/**/*_perf.js',
+            '!' + paths.closure + '/testing/**/*.js',
+            '!' + paths.closure + '/**/promise/testsuiteadapter.js',
+            '!' + paths.closure + '/**/relativecommontests.js',
+            '!' + paths.closure + '/**/osapi/osapi.js',
+            '!' + paths.closure + '/**/svgpan/svgpan.js',
+            '!' + paths.closure + '/**/alltests.js',
+            '!' + paths.closure + '/**/node_modules**.js',
+            '!' + paths.closure + '/**/protractor_spec.js',
+            '!' + paths.closure + '/**/protractor.conf.js',
+            '!' + paths.closure + '/**/browser_capabilities.js',
+            '!' + paths.closure + '/**/generate_closure_unit_tests.js',
+            '!' + paths.closure + '/**/doc/*.js',
+            ], {base: './'})
       // your other steps here
       .pipe(closureCompiler({
-          compilation_level: 'SIMPLE',
+          compilation_level: 'ADVANCED',
           warning_level: 'VERBOSE',
           language_in: 'ECMASCRIPT6_STRICT',
           language_out: 'ECMASCRIPT5_STRICT',
@@ -81,7 +98,7 @@ gulp.task('livereload', function (){
 gulp.task('watch', function () {
   liveReload.listen();
   gulp.watch('./src/sass/**/*.scss', ['sass']);
-  gulp.watch('./src/javascripts/**/*.js' ['javascripts']);
+  gulp.watch('./src/js/**/*.js' ['javascripts']);
   gulp.watch('./public/media/**/*', ['livereload']);
   liveReload()
 });
@@ -106,3 +123,25 @@ var logger = {
     }).call(this, error);
   }
 };
+
+gulp.task('build', function () {
+console.log(paths.js + 'build.js');
+    // Specify where your Closure Library is stored --------------------------vvvv
+    gulp.src(['node_modules/closure-library/closure/goog/**/*.js', './src/js/app.js'])
+        .pipe(concat('app.js'))
+        // Everything else is the same as in the docs
+        .pipe(closureCompiler({
+            compilerPath: '/Users/xvilo/projects/gulpWebPackTest/node_modules/google-closure-compiler/compiler.jar',
+            fileName: paths.js + 'build.js',
+            compilerFlags: {
+                closure_entry_point: 'goog.base',
+                compilation_level: 'ADVANCED_OPTIMIZATIONS',
+                define: [
+                    "goog.DEBUG=false"
+                ],
+                only_closure_dependencies: true,
+                warning_level: 'VERBOSE',
+                create_source_map: 'app.comp.js.map'
+            }
+        }));
+});
