@@ -8,11 +8,15 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "autoprefixer": "^7.1.6",
     "google-closure-compiler": "^20171023.0.1",
     "google-closure-compiler-js": "^20170910.0.1",
+    "google-closure-library": "^20170910.0.0",
     "gulp": "^3.9.1",
+    "gulp-closure-compiler": "^0.4.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-notify": "^3.0.0",
     "gulp-postcss": "^7.0.0",
@@ -24,9 +28,7 @@
     "postcss": "^6.0.14",
     "postcss-calc": "^6.0.1",
     "postcss-mq-dedupe": "^0.2.3",
+    "run-sequence": "^2.2.0",
     "webpack-stream": "^4.0.0"
-  },
-  "dependencies": {
-    "google-closure-library": "^20170910.0.0"
   }
 }
