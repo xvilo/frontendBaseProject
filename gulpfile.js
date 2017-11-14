@@ -15,6 +15,8 @@ var webpack = require('webpack-stream');
 var closureCompiler = require('gulp-closure-compiler');
 var liveReload = require('gulp-livereload');
 var concat = require('gulp-concat');
+var chokidar = require('chokidar');
+var runSequence = require('run-sequence');
 
 var slice = [].slice;
 
@@ -33,7 +35,7 @@ paths.closure = "node_modules/google-closure-library/closure/goog";
 // Sass stuff
 var precision = 10;
 gulp.task('sass', function() {
-  return gulp.src([paths.sass + "**/*.scss", paths.vendor + "**/*.scss"]).pipe(sourcemaps.init()).pipe(bulkSass()).pipe(sass({
+  return gulp.src([paths.sass + "**/*.scss"]).pipe(sourcemaps.init()).pipe(bulkSass()).pipe(sass({
     file: true,
     includePaths: [paths.spritesSrc, paths.vendor],
     precision: precision,
@@ -50,14 +52,12 @@ gulp.task('sass', function() {
   ])).pipe(sourcemaps.write()).pipe(gulp.dest(paths.css)).pipe(notify({
     title: '✅  SASS',
     message: function(file) {
-      console.log(sourcemaps.write().pipe);
       return "OK: " + (logger.format(file.path));
     }
   }));
 });
 
 gulp.task('javascripts', function() {
-  console.log('!' + paths.closure + '/testing/*.js');
   return gulp.src([
             paths.modules + 'app.js',
             paths.closure + '/**/*.js',
@@ -90,17 +90,30 @@ gulp.task('javascripts', function() {
       .pipe(gulp.dest(paths.js));
 });
 
-gulp.task('livereload', function (){
-  gulp.src('./public/**/*')
-  .pipe(liveReload());
-});
-
 gulp.task('watch', function () {
-  liveReload.listen();
-  gulp.watch('./src/sass/**/*.scss', ['sass']);
-  gulp.watch('./src/js/**/*.js' ['javascripts']);
-  gulp.watch('./public/media/**/*', ['livereload']);
-  liveReload()
+  var watch;
+  global.isWatching = true;
+  watch = function(pattern, callback) {
+    return chokidar.watch(pattern, {
+      ignoreInitial: true
+    }).on('all', function(event, path) {
+      logger.log(event, gutil.colors.magenta(path));
+      return callback(event, path);
+    });
+  };
+  liveReload.listen({
+    basePath: paths.docroot,
+    quiet: true
+  });
+  watch(paths.docroot, function(event, path) {
+    return liveReload.changed(path);
+  });
+  watch("./src/sass/**/*.scss", function() {
+    return runSequence('sass');
+  });
+  watch('./src/js/**/*.js', function() {
+    return runSequence('javascripts');
+  });
 });
 
 gulp.task('default', ['watch', 'sass', 'javascripts']);
@@ -125,7 +138,6 @@ var logger = {
 };
 
 gulp.task('build', function () {
-console.log(paths.js + 'build.js');
     // Specify where your Closure Library is stored --------------------------vvvv
     gulp.src(['node_modules/closure-library/closure/goog/**/*.js', './src/js/app.js'])
         .pipe(concat('app.js'))
